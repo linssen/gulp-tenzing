@@ -1,0 +1,45 @@
+{
+  "name": "gulp-styleguide",
+  "version": "0.0.1",
+  "description": "Builds style guides from handlebars templates",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">= 0.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/linssen/gulp-styleguide"
+  },
+  "keywords": [
+    "gulpplugin",
+    "styleguide",
+    "patterns",
+    "frontend"
+  ],
+  "author": "Wil Linssen <wil@linssen.me> (http://linssen.me)",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/wearefractal/gulp-coffee/raw/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/linssen/gulp-styleguide/issues"
+  },
+  "homepage": "https://github.com/linssen/gulp-styleguide",
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "should": "^3.3.1"
+  },
+  "dependencies": {
+    "through": "^2.3.4",
+    "marked": "^0.3.2",
+    "lodash": "^2.4.1",
+    "handlebars": "^2.0.0-alpha.2",
+    "yaml-front-matter": "^3.0.1",
+    "gulp-util": "^2.2.14"
+  }
+}
