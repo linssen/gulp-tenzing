@@ -5,7 +5,7 @@ var _, Buffer, File, fs, gutil, Handlebars, marked, path, through, yamlFront;
 Buffer = require('buffer').Buffer;
 fs = require('fs');
 gutil = require('gulp-util');
-Handlebars = require('Handlebars');
+Handlebars = require('handlebars');
 marked = require('marked');
 path = require('path');
 through = require('through');
