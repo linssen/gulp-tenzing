@@ -1,4 +1,7 @@
 # Gulp styleguides
+
+[![Build Status](https://travis-ci.org/linssen/gulp-styleguide.svg)](https://travis-ci.org/linssen/gulp-styleguide)
+
 ## A front end style guide generator with no opinions
 
 Put each of your html components in a directory, and the plugin will pull them out, read out the front YAML and build a directory of all of them according to the layouts you provide.
