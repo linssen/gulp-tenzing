@@ -28,6 +28,7 @@ module.exports = function (options) {
 
         fs.readdirSync(options.src).forEach(function (f) {
             var component;
+            if (f.substr(-5, 5) !== '.html') return;
             component = buildComponent(f);
             Handlebars.registerPartial(component.slug, component.template);
             components.push(component);
