@@ -1,6 +1,6 @@
-# Gulp styleguides
+# Gulp Tenzing
 
-[![Build Status](https://travis-ci.org/linssen/gulp-styleguide.svg)](https://travis-ci.org/linssen/gulp-styleguide)
+[![Build Status](https://travis-ci.org/linssen/gulp-tenzing.svg)](https://travis-ci.org/linssen/gulp-tenzing)
 
 ## A front end style guide generator with no opinions
 

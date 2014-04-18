@@ -1,9 +1,9 @@
-var Buffer, files, File, fs, should, styleguide;
+var Buffer, files, File, fs, should, tenzing;
 
 Buffer = require('buffer').Buffer;
 File = require('gulp-util').File;
 fs = require('fs');
-styleguide = require('../');
+tenzing = require('../');
 should = require('should');
 
 require('mocha');
@@ -56,7 +56,7 @@ describe('Stylguide', function () {
     });
 
     beforeEach(function () {
-        stream = styleguide({src: 'test/fixtures/components'});
+        stream = tenzing({src: 'test/fixtures/components'});
     });
 
     it('should find our components and render them correctly', function () {

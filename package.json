@@ -1,5 +1,5 @@
 {
-  "name": "gulp-styleguide",
+  "name": "gulp-tenzing",
   "version": "0.0.1",
   "description": "Builds style guides from handlebars templates",
   "main": "index.js",
@@ -11,11 +11,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/linssen/gulp-styleguide"
+    "url": "http://github.com/linssen/gulp-tenzing"
   },
   "keywords": [
     "gulpplugin",
-    "styleguide",
+    "tenzing",
     "patterns",
     "frontend"
   ],
@@ -23,13 +23,13 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/wearefractal/gulp-coffee/raw/master/LICENSE"
+      "url": "https://raw.githubusercontent.com/linssen/gulp-tenzing/master/LICENSE"
     }
   ],
   "bugs": {
-    "url": "https://github.com/linssen/gulp-styleguide/issues"
+    "url": "https://github.com/linssen/gulp-tenzing/issues"
   },
-  "homepage": "https://github.com/linssen/gulp-styleguide",
+  "homepage": "https://github.com/linssen/gulp-tenzing",
   "devDependencies": {
     "mocha": "^1.18.2",
     "should": "^3.3.1"
