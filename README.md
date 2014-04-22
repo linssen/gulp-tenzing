@@ -4,6 +4,15 @@
 
 ## A front end style guide generator with no opinions
 
+### Installation
+
+
+```bash
+$ npm install gulp-tenzing
+```
+
+### Usage
+
 Put each of your html components in a directory, and the plugin will pull them out, read out the front YAML and build a directory of all of them according to the layouts you provide.
 
 Layouts and components are just Handlebars templates, so you can ignore or use it's logic as you wish. A minimal layout would look like this:
@@ -50,6 +59,7 @@ You'll get
     This is a <em>nice</em> <code>button</code>.
     <pre><code>&lt;button class="button-primary"&gt;action&lt;/button&gt;</code></pre>
     <button class="button--primary">Action</button>
+</div>
 ```
 
 It's all configurable, and I need to improve this readme.
