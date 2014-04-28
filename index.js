@@ -1,6 +1,6 @@
 'use strict';
 
-var _, Buffer, File, fs, gutil, Handlebars, marked, path, through, yamlFront;
+var Buffer, File, fs, gutil, Handlebars, marked, path, through, yamlFront;
 
 Buffer = require('buffer').Buffer;
 fs = require('fs');
@@ -17,8 +17,26 @@ module.exports = function (options) {
     options = options || {src: './components/templates'};
     data = [];
 
-    slugify = function (file) {
-        return file.replace(/\.html$/, '');
+    slugify = function (str) {
+        // Many thanks to underscore.string.js for this
+        // https://github.com/epeli/underscore.string
+        var from, regex, to;
+
+        if (str === null) { return ''; }
+
+        from = 'ąàáäâãåæăćęèéëêìíïîłńòóöôõøśșțùúüûñçżź';
+        to = 'aaaaaaaaaceeeeeiiiilnoooooosstuuuunczz';
+
+        regex = new RegExp('[' + from + ']');
+        str = String(str)
+            .toLowerCase()
+            .replace(/\.html$/, '')
+            .replace(regex, function (c) {
+                var index = from.indexOf(c);
+                return to.charAt(index)  || '-';
+            });
+
+        return str;
     };
 
     buildComponents = function () {
@@ -44,7 +62,7 @@ module.exports = function (options) {
     };
 
     buildComponent = function (file) {
-        var contents, front;
+        var contents, front, group;
 
         contents = fs.readFileSync(path.join(options.src, file), 'utf8');
         front = yamlFront.loadFront(contents);
@@ -52,6 +70,8 @@ module.exports = function (options) {
         return {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
+            group: front.group ? front.group : null,
+            groupSlug: front.group ? slugify(front.group) : null,
             template: front.__content,
             slug: slugify(file),
             code: null,
@@ -60,7 +80,9 @@ module.exports = function (options) {
     };
 
     buildTemplates = function (file) {
-        var contents, template;
+        var contents, groups, template;
+
+        groups = {};
 
         if (file.isNull()) {
             return;
@@ -69,9 +91,22 @@ module.exports = function (options) {
             return this.emit('error', new gutil.PluginError('templates', 'Streaming not supported'));
         }
 
+        data.forEach(function (d) {
+            if (!d.groupSlug) { return; }
+            groups[d.groupSlug] = groups[d.groupSlug] || {
+                title: d.group,
+                slug: d.groupSlug,
+                components: []
+            };
+            groups[d.groupSlug].components.push(d);
+        });
+
         contents = file.contents.toString('utf8');
         template = Handlebars.compile(contents);
-        file.contents = new Buffer(template({components: data}), 'utf8');
+        file.contents = new Buffer(template({
+            components: data,
+            groups: groups
+        }), 'utf8');
 
         return this.push(file);
     };

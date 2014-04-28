@@ -74,4 +74,5 @@ describe('Stylguide', function () {
     it('should register each component as a partial with Handlebars');
     it('should convert the front matter YAML appropriately');
     it('should escape the code correctly');
+    it('should have correctly assigned groups');
 });
