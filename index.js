@@ -70,8 +70,7 @@ module.exports = function (options) {
         return {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
-            group: front.group ? front.group : null,
-            groupSlug: front.group ? slugify(front.group) : null,
+            group: front.group ? slugify(front.group) : null,
             template: front.__content,
             slug: slugify(file),
             code: null,
@@ -92,13 +91,15 @@ module.exports = function (options) {
         }
 
         data.forEach(function (d) {
-            if (!d.groupSlug) { return; }
-            groups[d.groupSlug] = groups[d.groupSlug] || {
+            if (!d.group) { return; }
+            groups[d.group] = groups[d.group] || {
                 title: d.group,
-                slug: d.groupSlug,
+                slug: d.group,
                 components: []
             };
-            groups[d.groupSlug].components.push(d);
+            groups[d.group].components.push(d);
+            // Overwrite the group slug string with this full object
+            d.group = groups[d.group];
         });
 
         contents = file.contents.toString('utf8');
