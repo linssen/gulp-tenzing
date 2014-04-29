@@ -19,14 +19,20 @@ Layouts and components are just Handlebars templates, so you can ignore or use i
 
 ```html
 <h1>Components</h1>
-<nav>
+<nav class="ComponentList">
     {{#each components}}
         <a href="#{{slug}}">{{title}}</a>
     {{/each}}
 </nav>
 
+<nav class="GroupList">
+    {{#each groups}}
+        <a href="#{{slug}}">{{title}}</a>
+    {{/each}}
+</nav>
+
 {{#each components}}
-    <div>
+    <div id="{{slug}}" class="Group-{{group.slug}}">
         <h2>{{title}}</h2>
         {{{details}}}
         <pre><code>{{{code}}}</code></pre>
@@ -40,6 +46,7 @@ So assuming you have one component `button.html` that looks like this:
 ```html
 ---
 title: Button
+group: Forms
 details: |
     This is a _nice_ `button`
 ---
