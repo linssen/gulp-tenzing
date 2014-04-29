@@ -34,7 +34,8 @@ module.exports = function (options) {
             .replace(regex, function (c) {
                 var index = from.indexOf(c);
                 return to.charAt(index)  || '-';
-            });
+            })
+            .replace(/\s/g, '-');
 
         return str;
     };
@@ -70,7 +71,11 @@ module.exports = function (options) {
         return {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
-            group: front.group ? slugify(front.group) : null,
+            group: front.group ? {
+                title: front.group,
+                slug: slugify(front.group),
+                components: []
+            } : null,
             template: front.__content,
             slug: slugify(file),
             code: null,
@@ -92,14 +97,8 @@ module.exports = function (options) {
 
         data.forEach(function (d) {
             if (!d.group) { return; }
-            groups[d.group] = groups[d.group] || {
-                title: d.group,
-                slug: d.group,
-                components: []
-            };
-            groups[d.group].components.push(d);
-            // Overwrite the group slug string with this full object
-            d.group = groups[d.group];
+            groups[d.group.slug] = groups[d.group.slug] || d.group;
+            groups[d.group.slug].components.push(d);
         });
 
         contents = file.contents.toString('utf8');

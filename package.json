@@ -1,6 +1,6 @@
 {
   "name": "gulp-tenzing",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Builds style guides from handlebars templates",
   "main": "index.js",
   "scripts": {
