@@ -16,7 +16,7 @@ module.exports = function (options) {
 
     options = options || {layoutsPath: './layouts/templates'};
     components = [];
-    groups = [];
+    groups = {};
 
     slugify = function (str) {
         // Many thanks to underscore.string.js for this
@@ -44,7 +44,7 @@ module.exports = function (options) {
     buildComponent = function (file) {
         // Put together most of the component now, and finish later when we
         // have all of them (partials).
-        var contents, component, front;
+        var contents, component, front, groupSplit, groupSlug;
         if (file.isNull()) {
             return;
         }
@@ -53,14 +53,20 @@ module.exports = function (options) {
         }
         contents = file.contents.toString('utf8');
         front = yamlFront.loadFront(contents);
+        groupSplit = file.relative.split(path.sep).slice(0, -1);
+        groupSlug = groupSplit.join('_');
+        groups[groupSlug] = groups[groupSlug] || {
+            slug: groupSlug,
+            title: groupSlug
+                .replace(/[-_]+/g, ' ')
+                .replace(path.sep, ' ' + path.sep + ' '),
+            components: []
+        };
+
         component = {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
-            group: front.group ? {
-                title: front.group,
-                slug: slugify(front.group),
-                components: []
-            } : null,
+            group: groupSplit.length > 0 ? groups[groupSlug] : null,
             template: front.__content,
             slug: slugify(file.relative),
             code: null,
@@ -69,6 +75,7 @@ module.exports = function (options) {
         Handlebars.registerPartial(component.slug, component.template);
 
         components.push(component);
+        groups[groupSlug].components.push(component);
     };
 
     buildLayout = function (file) {
@@ -95,12 +102,6 @@ module.exports = function (options) {
         components = components.map(function (component) {
             component.rendered = Handlebars.compile(component.template)();
             component.code = Handlebars.Utils.escapeExpression(component.rendered);
-
-            if (component.group) {
-                groups[component.group.slug] = groups[component.group.slug] || component.group;
-                groups[component.group.slug].components.push(component);
-            }
-
             return component;
         });
 
