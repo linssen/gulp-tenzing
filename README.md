@@ -27,7 +27,7 @@ Layouts and components are just Handlebars templates, so you can ignore or use i
 
 <nav class="GroupList">
     {{#each groups}}
-        <a href="#{{slug}}">{{title}}</a>
+        {{title}}<br>
     {{/each}}
 </nav>
 
@@ -59,6 +59,10 @@ You'll get
 <h1>Components</h1>
 <nav>
     <a href="#button">Button</a>
+</nav>
+
+<nav class="GroupList">
+    Forms<br>
 </nav>
 
 <div>
