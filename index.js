@@ -1,6 +1,6 @@
 'use strict';
 
-var Buffer, File, fs, gutil, Handlebars, marked, path, through, yamlFront;
+var Buffer, fs, gutil, Handlebars, marked, path, through, yamlFront;
 
 Buffer = require('buffer').Buffer;
 fs = require('fs');
@@ -12,10 +12,11 @@ through = require('through');
 yamlFront = require('yaml-front-matter');
 
 module.exports = function (options) {
-    var buildComponents, buildComponent, buildTemplates, data, slugify;
+    var buildComponent, buildLayouts, buildLayout, components, groups, slugify;
 
-    options = options || {src: './components/templates'};
-    data = [];
+    options = options || {layoutsPath: './layouts/templates'};
+    components = [];
+    groups = [];
 
     slugify = function (str) {
         // Many thanks to underscore.string.js for this
@@ -40,35 +41,19 @@ module.exports = function (options) {
         return str;
     };
 
-    buildComponents = function () {
-        var components;
-
-        components = [];
-
-        fs.readdirSync(options.src).forEach(function (f) {
-            var component;
-            if (f.substr(-5, 5) !== '.html') return;
-            component = buildComponent(f);
-            Handlebars.registerPartial(component.slug, component.template);
-            components.push(component);
-        });
-
-        // Loop a second time to take advantage of partials
-        components.map(function (component) {
-            component.rendered = Handlebars.compile(component.template)();
-            component.code = Handlebars.Utils.escapeExpression(component.rendered);
-        });
-
-        return components;
-    };
-
     buildComponent = function (file) {
-        var contents, front, group;
-
-        contents = fs.readFileSync(path.join(options.src, file), 'utf8');
+        // Put together most of the component now, and finish later when we
+        // have all of them (partials).
+        var contents, component, front;
+        if (file.isNull()) {
+            return;
+        }
+        if (file.isStream()) {
+            return this.emit('error', new gutil.PluginError('components', 'Streaming not supported'));
+        }
+        contents = file.contents.toString('utf8');
         front = yamlFront.loadFront(contents);
-
-        return {
+        component = {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
             group: front.group ? {
@@ -77,41 +62,52 @@ module.exports = function (options) {
                 components: []
             } : null,
             template: front.__content,
-            slug: slugify(file),
+            slug: slugify(file.relative),
             code: null,
             rendered: null
         };
+        Handlebars.registerPartial(component.slug, component.template);
+
+        components.push(component);
     };
 
-    buildTemplates = function (file) {
-        var contents, groups, template;
-
-        groups = {};
-
-        if (file.isNull()) {
-            return;
-        }
-        if (file.isStream()) {
-            return this.emit('error', new gutil.PluginError('templates', 'Streaming not supported'));
-        }
-
-        data.forEach(function (d) {
-            if (!d.group) { return; }
-            groups[d.group.slug] = groups[d.group.slug] || d.group;
-            groups[d.group.slug].components.push(d);
+    buildLayout = function (file) {
+        // Create templates from layouts and pipe them to the stream
+        var contents, layout, template;
+        if (file.substr(-5, 5) !== '.html') { return; }
+        contents = fs.readFileSync(path.join(options.layoutsPath, file), 'utf8');
+        template = Handlebars.compile(contents);
+        layout = new gutil.File({
+            cwd: __dirname,
+            base: path.join(__dirname, options.layoutsPath),
+            path: path.join(__dirname, options.layoutsPath, file),
+            contents: new Buffer(template({
+                components: components,
+                groups: groups
+            }), 'utf8')
         });
 
-        contents = file.contents.toString('utf8');
-        template = Handlebars.compile(contents);
-        file.contents = new Buffer(template({
-            components: data,
-            groups: groups
-        }), 'utf8');
-
-        return this.push(file);
+        this.emit('data', layout);
     };
 
-    data = buildComponents.call(this);
+    buildLayouts = function () {
+        // Loop a second time to take advantage of partials
+        components = components.map(function (component) {
+            component.rendered = Handlebars.compile(component.template)();
+            component.code = Handlebars.Utils.escapeExpression(component.rendered);
 
-    return through(buildTemplates);
+            if (component.group) {
+                groups[component.group.slug] = groups[component.group.slug] || component.group;
+                groups[component.group.slug].components.push(component);
+            }
+
+            return component;
+        });
+
+        fs.readdirSync(options.layoutsPath).forEach(buildLayout, this);
+
+        this.emit('end');
+    };
+
+    return through(buildComponent, buildLayouts);
 };
