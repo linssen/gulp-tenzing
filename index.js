@@ -16,7 +16,7 @@ module.exports = function (options) {
 
     options = options || {layoutsPath: './layouts/templates'};
     components = [];
-    groups = [];
+    groups = {};
 
     slugify = function (str) {
         // Many thanks to underscore.string.js for this
@@ -44,7 +44,7 @@ module.exports = function (options) {
     buildComponent = function (file) {
         // Put together most of the component now, and finish later when we
         // have all of them (partials).
-        var contents, component, front;
+        var contents, component, front, group;
         if (file.isNull()) {
             return;
         }
@@ -53,14 +53,15 @@ module.exports = function (options) {
         }
         contents = file.contents.toString('utf8');
         front = yamlFront.loadFront(contents);
+        group = {};
+        group.title = file.relative.split(path.sep).slice(0, -1)[0] || 'Ungrouped';
+        group.slug = slugify(group.title);
+        group.components = [];
+        groups[group.slug] = groups[group.slug] || group;
         component = {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
-            group: front.group ? {
-                title: front.group,
-                slug: slugify(front.group),
-                components: []
-            } : null,
+            group: groups[group.slug],
             template: front.__content,
             slug: slugify(file.relative),
             code: null,
@@ -69,6 +70,7 @@ module.exports = function (options) {
         Handlebars.registerPartial(component.slug, component.template);
 
         components.push(component);
+        groups[group.slug].components.push(component);
     };
 
     buildLayout = function (file) {
