@@ -1,11 +1,12 @@
 'use strict';
 
-var Buffer, fs, gutil, Handlebars, marked, path, through, yamlFront;
+var Buffer, fs, gutil, Handlebars, hljs, marked, path, through, yamlFront;
 
 Buffer = require('buffer').Buffer;
 fs = require('fs');
 gutil = require('gulp-util');
 Handlebars = require('handlebars');
+hljs = require('highlight.js');
 marked = require('marked');
 path = require('path');
 through = require('through');
@@ -101,8 +102,7 @@ module.exports = function (options) {
             group: groups[group.slug],
             template: front.__content,
             slug: slugify(file.relative),
-            code: null,
-            rendered: null
+            code: null
         };
         Handlebars.registerPartial(component.slug, component.template);
 
@@ -132,8 +132,8 @@ module.exports = function (options) {
     buildLayouts = function () {
         // Loop a second time to take advantage of partials
         components = components.map(function (component) {
-            component.rendered = Handlebars.compile(component.template)();
-            component.code = Handlebars.Utils.escapeExpression(component.rendered);
+            component.code = Handlebars.compile(component.template)();
+            component.highlighted = hljs.highlight('html', component.code).value;
 
             if (component.group) {
                 groups[component.group.slug] = groups[component.group.slug] || component.group;

@@ -1,6 +1,6 @@
 {
   "name": "gulp-tenzing",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Builds style guides from handlebars templates",
   "main": "index.js",
   "scripts": {
@@ -40,6 +40,7 @@
     "lodash": "^2.4.1",
     "handlebars": "^2.0.0-alpha.2",
     "yaml-front-matter": "^3.0.1",
-    "gulp-util": "^2.2.14"
+    "gulp-util": "^2.2.14",
+    "highlight.js": "^8.0.0"
   }
 }

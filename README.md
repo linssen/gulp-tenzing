@@ -35,8 +35,8 @@ Layouts and components are just Handlebars templates, so you can ignore or use i
     <div id="{{slug}}" class="Group-{{group.slug}}">
         <h2>{{title}}</h2>
         {{{details}}}
-        <pre><code>{{{code}}}</code></pre>
-        {{{rendered}}}
+        <pre><code>{{{highlighted}}}</code></pre>
+        {{{code}}}
     </div>
 {{/each}}
 ```
