@@ -12,11 +12,47 @@ through = require('through');
 yamlFront = require('yaml-front-matter');
 
 module.exports = function (options) {
-    var buildComponent, buildLayouts, buildLayout, components, groups, slugify;
+    var buildComponent, buildLayouts, buildLayout, components,
+        handleBarsHelpers, groups, slugify;
 
     options = options || {layoutsPath: './layouts/templates'};
     components = [];
     groups = {};
+
+    handleBarsHelpers = function () {
+        Handlebars.registerHelper('filter', function (context, options) {
+            var filtered, filters;
+            filtered = [];
+            filters = {with: [], without: []};
+            // Add comma separated filter groups to the relavent keys
+            for (var key in filters) {
+                if (options.hash[key] === undefined) { continue; }
+                filters[key] = options.hash[key].split(',').map(function (v) {
+                    return v.trim();
+                });
+            }
+            // If there are no filters, then return nuthin
+            if (filters.without.length + filters.with.length === 0) {
+                return filtered.join('');
+            }
+            // Compare the slugs in the loop against those in the filters
+            // it is in this way possible to have with AND without should you
+            // want to.
+            for (var slug in context) {
+                // Only add the group once
+                if (filtered.indexOf(context[slug].slug) !== -1) { continue; }
+                // With
+                if (filters.with.length > 0 && filters.with.indexOf(context[slug].slug) !== -1) {
+                    filtered.push(options.fn(context[slug]));
+                }
+                // Without
+                if (filters.without.length > 0 && filters.without.indexOf(context[slug].slug) === -1) {
+                    filtered.push(options.fn(context[slug]));
+                }
+            }
+            return filtered.join('');
+        });
+    };
 
     slugify = function (str) {
         // Many thanks to underscore.string.js for this
@@ -110,6 +146,8 @@ module.exports = function (options) {
 
         this.emit('end');
     };
+
+    handleBarsHelpers();
 
     return through(buildComponent, buildLayouts);
 };
