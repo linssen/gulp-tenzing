@@ -91,6 +91,7 @@ module.exports = function (options) {
         front = yamlFront.loadFront(contents);
         group = {};
         group.title = file.relative.split(path.sep).slice(0, -1)[0] || 'Ungrouped';
+        group.title = group.title.replace(/[-_]/g, ' ');
         group.slug = slugify(group.title);
         group.components = [];
         groups[group.slug] = groups[group.slug] || group;
