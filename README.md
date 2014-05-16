@@ -21,32 +21,37 @@ Layouts and components are just Handlebars templates, so you can ignore or use i
 <h1>Components</h1>
 <nav class="ComponentList">
     {{#each components}}
-        <a href="#{{slug}}">{{title}}</a>
+        <a href="#cmp-{{slug}}">{{title}}</a>
     {{/each}}
 </nav>
 
 <nav class="GroupList">
     {{#each groups}}
-        {{title}}<br>
+        <a href="#grp-{{slug}}">{{title}}</a><br>
     {{/each}}
 </nav>
 
-{{#each components}}
-    <div id="{{slug}}" class="Group-{{group.slug}}">
+{{#each groups}}
+    <div id="grp-{{slug}}" class="Group">
         <h2>{{title}}</h2>
-        {{{details}}}
-        <pre><code>{{{highlighted}}}</code></pre>
-        {{{code}}}
+        {{#each components}}
+            <div id="cmp-{{slug}}" class="Component">
+                <h3>{{#if title}}{{title}}{{else}}{{slug}}{{/if}}</h3>
+                <div class="Component-rendered">
+                    {{{code}}}
+                </div>
+                <pre><code>{{code}}</code></pre>
+            </div>
+        {{/each}}
     </div>
 {{/each}}
 ```
 
-So assuming you have one component `button.html` that looks like this:
+So assuming you have one component `Forms/button.html` that looks like this:
 
 ```html
 ---
 title: Button
-group: Forms
 details: |
     This is a _nice_ `button`
 ---
@@ -65,11 +70,16 @@ You'll get
     Forms<br>
 </nav>
 
-<div>
-    <h2>Button</h2>
-    This is a <em>nice</em> <code>button</code>.
-    <pre><code>&lt;button class="button-primary"&gt;action&lt;/button&gt;</code></pre>
-    <button class="button--primary">Action</button>
+<div id="grp-forms" class="Group">
+    <h2>Forms</h2>
+    <div id="cmp-button">
+        <h3>Button</h3>
+        This is a <em>nice</em> <code>button</code>.
+        <div class="Component-rendered">
+            <button class="button--primary">Action</button>
+        </div>
+        <pre><code>&lt;button class="button-primary"&gt;action&lt;/button&gt;</code></pre>
+    </div>
 </div>
 ```
 

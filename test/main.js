@@ -10,7 +10,7 @@ require('mocha');
 
 files = {
     components: {
-        button: '---\ntitle: Button\ngroup: Forms\ndetails: |\n    Some _markdown_.\n---\n<button>I am a button</button>',
+        button: '---\ntitle: Button\ndetails: |\n    Some _markdown_.\n---\n<button>I am a button</button>',
         form: '<form><label>Label</label>{{> button}}</form>'
     },
     layout: {
@@ -21,12 +21,7 @@ files = {
                 '{{#if details}}<div class="details>{{{details}}}</div>{{/if}}' +
                 '<div class="code">{{{code}}}</div>' +
                 '<div class="rendered">{{{rendered}}}</div>' +
-            '{{/each}}' +
-            '<div class="groups">' +
-                '{{#each groups}}' +
-                    '<a href="#group-{{slug}}">{{title}}</a><br>' +
-                '{{/each}}' +
-            '</div>',
+            '{{/each}}',
         dest:
             '<h1>Layout</h1>' +
             '<div class="title>Button</div>' +
@@ -34,8 +29,7 @@ files = {
             '<div class="code">\n&lt;button&gt;I am a button&lt;/button&gt;</div>' +
             '<div class="rendered">\n<button>I am a button</button></div>' +
             '<div class="code">&lt;form&gt;&lt;label&gt;Label&lt;/label&gt;\n&lt;button&gt;I am a button&lt;/button&gt;&lt;/form&gt;</div>' +
-            '<div class="rendered"><form><label>Label</label>\n<button>I am a button</button></form></div>' +
-            '<div class="groups"><a href="#group-forms">Forms</a></div>'
+            '<div class="rendered"><form><label>Label</label>\n<button>I am a button</button></form></div>'
     }
 };
 
