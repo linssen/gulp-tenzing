@@ -1,3 +1,11 @@
 language: node_js
 node_js:
   - 0.10
+deploy:
+  provider: npm
+  email: wil@linssen.me
+  api_key:
+    secure: gbrCQ3JllWq6IEUBrn/rPYzt69B78HDCZUkkDk8YHW7YFCQTOPd43bungb1uQOcApR5xaQcDYDlpuc+Ksqgcq1IjtbREuhkPT35qMeorP8BVkkqRNEyKdIh3AlVrDSCo4a2GZrl4pM66qAiFC7HvCDmewnI8JvJi9zm7m9TXhn4=
+  on:
+    tags: true
+    repo: linssen/gulp-tenzing
