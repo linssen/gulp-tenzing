@@ -107,7 +107,6 @@ module.exports = function (options) {
         Handlebars.registerPartial(component.slug, component.template);
 
         components.push(component);
-        groups[group.slug].components.push(component);
     };
 
     buildLayout = function (file) {
