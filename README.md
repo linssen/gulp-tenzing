@@ -83,4 +83,24 @@ You'll get
 </div>
 ```
 
-It's all configurable, and I need to improve this readme.
+### Filters
+
+A nice way to filter in / out slugs. Works with components and groups.
+
+```html
+<h1>Show all groups, sans the one with the slugs `colours` or `icons`</h1>
+<ul>
+    <li><a href="/#top">Home</a></li>
+    {{#filter groups without="colours,icons"}}
+        <li><a href="#grp-{{slug}}">{{title}}</a></li>
+    {{/filter}}
+    <li><a href="/colours.html">Colours</a></li>
+    <li><a href="/icons.html">Icons</a></li>
+</ul>
+
+<h1>Show only the colours group</h1>
+
+{{#filter groups with="colours"}}
+<h2>{{title}}</h2>
+{{/filter}}
+```
