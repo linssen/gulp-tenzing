@@ -52,6 +52,9 @@ So assuming you have one component `Forms/button.html` that looks like this:
 ```html
 ---
 title: Button
+options:
+    - {anything: you}
+    - {might: like}
 details: |
     This is a _nice_ `button`
 ---

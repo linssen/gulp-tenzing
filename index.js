@@ -99,6 +99,7 @@ module.exports = function (options) {
         component = {
             title: front.title ? front.title : null,
             details: front.details ? marked(front.details.trim()) : null,
+            options: front.options ? front.options : null,
             group: groups[group.slug],
             template: front.__content,
             slug: slugify(file.relative),
